@@ -25,12 +25,12 @@ struct Node
     int val;        //  kindがND_NUMの場合のみ使う
 };
 
-Node *expr();
-Node *mul();
-Node *unary();
-Node *primary();
+static Node *expr();
+static Node *mul();
+static Node *unary();
+static Node *primary();
 
-Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
+static Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
 {
     Node *node = calloc(1, sizeof(Node));
     node->kind = kind;
@@ -39,7 +39,7 @@ Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
     return node;
 }
 
-Node *new_node_num(int val)
+static Node *new_node_num(int val)
 {
     Node *node = calloc(1, sizeof(Node));
     node->kind = ND_NUM;
@@ -71,7 +71,7 @@ Token *token;
 
 //  エラーを報告するための関数
 //  printfと同じ引数を取る
-void error(char *fmt, ...)
+static void error(char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
@@ -84,7 +84,7 @@ void error(char *fmt, ...)
 char *user_input;
 
 //  エラー箇所を報告する
-void error_at(char *loc, char *fmt, ...)
+static void error_at(char *loc, char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
@@ -100,7 +100,7 @@ void error_at(char *loc, char *fmt, ...)
 
 //  次のトークンが期待している記号の時には、トークンを1つ読み進めて
 //  真を返す。それ以外の場合には偽を返す。
-bool consume(char op)
+static bool consume(char op)
 {
     if(token->kind != TK_RESERVED || token->str[0] != op) return false;
 
@@ -110,7 +110,7 @@ bool consume(char op)
 
 //  次のトークンが期待している記号の時には、トークンを1つ読み進める。
 //  それ以外の場合にはエラーを報告する。
-void expect(char op)
+static void expect(char op)
 {
     if(token->kind != TK_RESERVED || token->str[0] != op) error_at(token->str, "'%c'ではありません", op);
 
@@ -119,7 +119,7 @@ void expect(char op)
 
 //  次のトークンが数値の時には、トークンを1つ読み進めてその数値を返す。
 //  それ以外の場合にはエラーを報告する。
-int expect_number()
+static int expect_number()
 {
     if(token->kind != TK_NUM) error_at(token->str, "数ではありません。");
 
@@ -128,13 +128,13 @@ int expect_number()
     return val;
 }
 
-bool at_eof()
+static bool at_eof()
 {
     return token->kind ==TK_EOF;
 }
 
 //  新しいトークンを作成してcurに繋げる
-Token *new_token(TokenKind kind, Token *cur, char *str)
+static Token *new_token(TokenKind kind, Token *cur, char *str)
 {
     Token *tok = calloc(1, sizeof(Token));
     tok->kind = kind;
@@ -177,7 +177,7 @@ Token *tokenize(char *p)
     return head.next;
 }
 
-Node *expr()
+static Node *expr()
 {
     Node *node = mul();
 
@@ -189,7 +189,7 @@ Node *expr()
     }
 }
 
-Node *mul()
+static Node *mul()
 {
     Node *node = unary();
 
@@ -201,14 +201,14 @@ Node *mul()
     }
 }
 
-Node *unary()
+static Node *unary()
 {
     if(consume('+')) return primary();
     if(consume('-')) return new_node(ND_SUB, new_node_num(0), primary());
     return primary();
 }
 
-Node *primary()
+static Node *primary()
 {
     //  次のトークンが"("なら、"(" expr ")"のはず
     if(consume('('))
@@ -220,7 +220,7 @@ Node *primary()
     else return new_node_num(expect_number());
 }
 
-void gen(Node *node)
+static void gen(Node *node)
 {
     if(node->kind == ND_NUM)
     {
