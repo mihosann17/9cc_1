@@ -143,7 +143,7 @@ static Token *new_token(TokenKind kind, Token *cur, char *str)
     return tok;
 }
 
-Token *tokenize(char *p)
+static Token *tokenize(char *p)
 {
     Token head;
     head.next = NULL;
