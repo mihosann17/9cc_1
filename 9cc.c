@@ -30,7 +30,7 @@ static Node *mul();
 static Node *unary();
 static Node *primary();
 
-static Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
+static Node* new_node(NodeKind kind, Node *lhs, Node *rhs)
 {
     Node *node = calloc(1, sizeof(Node));
     node->kind = kind;
