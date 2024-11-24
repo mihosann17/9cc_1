@@ -29,14 +29,6 @@ struct Node
     int val;        //  kindがND_NUMの場合のみ使う
 };
 
-Node *expr();
-Node *equality();
-Node *relational();
-Node *add();
-Node *mul();
-Node *unary();
-Node *primary();
-
 //トークンの種類
 typedef enum
 {
@@ -56,6 +48,7 @@ struct Token
     int len;        //  トークンの長さ
 };
 
+Node *expr();
 bool consume(char *op);
 void expect(char *op);
 int expect_number();
