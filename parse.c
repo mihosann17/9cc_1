@@ -1,6 +1,8 @@
 #include "9cc.h"
 
-
+static Node *stmt();
+static Node *expr();
+static Node *assign();
 static Node *equality();
 static Node *relational();
 static Node *add();
@@ -25,9 +27,40 @@ static Node *new_node_num(int val)
     return node;
 }
 
+static Node *new_node_ident(Token* tok)
+{
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = ND_LVAR;
+    node->offset = (tok->str[0] - '1' + 1) * 8;
+    return node;
+}
+
+Node *code[100];
+
+void program()
+{
+    int i = 0;
+    while(!at_eof()) code[i++] = stmt();
+    code[i] = NULL;
+}
+
+Node *stmt()
+{
+    Node *node = expr();
+    expect(";");
+    return node;
+}
+
 Node *expr()
 {
-    return equality();
+    return assign();
+}
+
+Node *assign()
+{
+    Node *node = equality();
+    if(consume("=")) node = new_node(ND_ASSIGN , node, assign());
+    return node;
 }
 
 static Node *equality()
@@ -96,5 +129,9 @@ static Node *primary()
         expect(")");
         return node;
     }
-    else return new_node_num(expect_number());
+
+    Token *tok = consume_ident();
+    if(tok) return new_node_ident(tok);
+
+    return new_node_num(expect_number());
 }

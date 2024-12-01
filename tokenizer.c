@@ -2,7 +2,7 @@
 
 //  エラーを報告するための関数
 //  printfと同じ引数を取る
-static void error(char *fmt, ...)
+void error(char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
@@ -12,7 +12,7 @@ static void error(char *fmt, ...)
 }
 
 //  エラー箇所を報告する
-static void error_at(char *loc, char *fmt, ...)
+void error_at(char *loc, char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
@@ -60,7 +60,18 @@ int expect_number()
     return val;
 }
 
-static bool at_eof()
+//  次のトークンがローカル変数の時には、トークンを1つ読み進めてそのトークンを返す。
+//  それ以外の場合はNULLを返す。（怪しい）
+Token *consume_ident()
+{
+    if(token->kind != TK_IDENT) return NULL;
+
+    Token *tok = token;
+    token = token->next;
+    return tok;
+}
+
+bool at_eof()
 {
     return token->kind ==TK_EOF;
 }
@@ -100,7 +111,7 @@ Token *tokenize(char *p)
             continue;
         }
 
-        if(*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == '(' || *p ==')' || *p == '<' || *p == '>')
+        if(*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == '(' || *p ==')' || *p == '<' || *p == '>' || *p == '=' || *p == ';')
         {
             cur = new_token(TK_RESERVED, cur, p++);
             cur->len = 1;

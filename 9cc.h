@@ -17,6 +17,8 @@ typedef enum
     ND_NEQ,         //  !=
     ND_LTE,         //  <=
     ND_LET,         //  <
+    ND_ASSIGN,      //  =
+    ND_LVAR,        //  ローカル変数
 }NodeKind;
 
 typedef struct Node Node;
@@ -27,6 +29,7 @@ struct Node
     Node *lhs;      //  左辺
     Node *rhs;      //  右辺
     int val;        //  kindがND_NUMの場合のみ使う
+    int offset;     //  kindがND_LVARの場合のみ使う
 };
 
 //トークンの種類
@@ -49,12 +52,17 @@ struct Token
     int len;        //  トークンの長さ
 };
 
-Node *expr();
+void program();
 bool consume(char *op);
+Token *consume_ident();
+bool at_eof();
 void expect(char *op);
 int expect_number();
 Token *tokenize(char *p);
 void gen(Node *node);
+void error(char *fmt, ...);
+void error_at(char *loc, char *fmt, ...);
+Node *code[100];
 
 //  現在着目しているトークン
 Token *token;
