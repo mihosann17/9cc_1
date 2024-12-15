@@ -52,6 +52,15 @@ struct Token
     int len;        //  トークンの長さ
 };
 
+typedef struct LVar LVar;
+struct LVar
+{
+    LVar *next;
+    char *name;
+    int len;
+    int offset;
+};
+
 void program();
 bool consume(char *op);
 Token *consume_ident();
@@ -68,3 +77,5 @@ Node *code[100];
 Token *token;
 //  入力プログラム
 char *user_input;
+//  ローカル変数
+LVar *locals;
