@@ -77,13 +77,34 @@ bool at_eof()
 }
 
 //  新しいトークンを作成してcurに繋げる
-static Token *new_token(TokenKind kind, Token *cur, char *str)
+static Token *new_token(TokenKind kind, Token *cur, char *str, int len)
 {
     Token *tok = calloc(1, sizeof(Token));
     tok->kind = kind;
     tok->str = str;
+    tok->len = len;
     cur->next = tok;
     return tok;
+}
+
+int is_valuable(char c)
+{
+    return ('a' <= c && c <= 'z') ||
+            ('A' <= c && c <= 'Z') ||
+            ('0' <= c && c <= '9') ||
+            (c == '_');
+}
+
+int countIdentLength(char *p)
+{
+    int len = 0;
+    while(is_valuable(*p))
+    {
+        len++;
+        p++;
+    }
+
+    return len;
 }
 
 Token *tokenize(char *p)
@@ -105,7 +126,7 @@ Token *tokenize(char *p)
             strncmp(p, "<=", 2) == 0 ||
             strncmp(p, ">=", 2) == 0)
         {
-            cur = new_token(TK_RESERVED, cur, p);
+            cur = new_token(TK_RESERVED, cur, p, 2);
             p += 2;
             cur->len = 2;
             continue;
@@ -113,29 +134,29 @@ Token *tokenize(char *p)
 
         if(strchr("+-*/()<>=;", *p))
         {
-            cur = new_token(TK_RESERVED, cur, p++);
-            cur->len = 1;
-            continue;
-        }
-
-        if('a' <= *p && *p <= 'z')
-        {
-            cur = new_token(TK_IDENT, cur, p ++);
+            cur = new_token(TK_RESERVED, cur, p++, 1);
             cur->len = 1;
             continue;
         }
 
         if(isdigit(*p))
         {
-            cur = new_token(TK_NUM, cur, p);
+            cur = new_token(TK_NUM, cur, p, 1);
             cur->val = strtol(p, &p, 10);
             cur->len = 1;
+            continue;
+        }
+
+        if(is_valuable(*p))
+        {
+            cur = new_token(TK_IDENT, cur, p, countIdentLength(p));
+            p += cur ->len;
             continue;
         }
 
         error_at(token->str, "トークナイズ出来ません");
     }
 
-    new_token(TK_EOF, cur, p);
+    new_token(TK_EOF, cur, p, 1);
     return head.next;
 }
