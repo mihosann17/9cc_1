@@ -31,7 +31,7 @@ static Node *new_node_num(int val)
 LVar *find_lvar(Token *tok)
 {
     for (LVar *var = locals; var; var = var->next)
-        if(var->len == tok->len && !memcmp(tok->str, var->name, var->len)) return var;
+        if (var->len == tok->len && !memcmp(tok->str, var->name, var->len)) return var;
     return NULL;
 }
 
@@ -48,14 +48,33 @@ static Node *new_node_ident(Token* tok)
         else
         {
             lvar = calloc(1, sizeof(LVar));
-            lvar->next =locals;
+            lvar->next = locals;
             lvar->name = tok->str;
             lvar->len = tok->len;
-            lvar->offset = locals-> offset + 8;
+
+            if(locals)
+            {
+                lvar->offset = locals->offset + 8;
+            }
+            else
+            {
+                lvar->offset = 0;
+            }
+
             node->offset = lvar->offset;
             locals = lvar;
         }
         return node;
+}
+
+int countLvar()
+{
+    int count = 0;
+    for (LVar *var = locals; var; var = var->next)
+    {
+        count++;
+    }
+    return count;
 }
 
 Node *code[100];
@@ -156,7 +175,7 @@ static Node *primary()
     Token *tok = consume_ident();
     if(tok)
     {
-        new_node_ident(tok);
+        return new_node_ident(tok);
     }
 
     return new_node_num(expect_number());

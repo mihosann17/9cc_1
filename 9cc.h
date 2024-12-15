@@ -71,11 +71,12 @@ Token *tokenize(char *p);
 void gen(Node *node);
 void error(char *fmt, ...);
 void error_at(char *loc, char *fmt, ...);
+int countLvar();
 Node *code[100];
 
 //  現在着目しているトークン
 Token *token;
 //  入力プログラム
 char *user_input;
-//  ローカル変数
+//  ローカル変数を管理している変数
 LVar *locals;

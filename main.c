@@ -20,6 +20,8 @@ int main(int argc, char **argv)
     //  パースする
     program();
 
+    int lvarCount = countLvar();
+
     //  アセンブリの前半部分を出力
     printf(".intel_syntax noprefix\n");
     printf(".global main\n");
@@ -29,7 +31,7 @@ int main(int argc, char **argv)
     //  変数26子分の領域を確保する
     printf("    push rbp\n");
     printf("    mov rbp, rsp\n");
-    printf("    sub rsp, 208\n");
+    printf("    sub rsp, %d\n", lvarCount * 8);
 
     //  抽象構文木を下りながらコード生成
     for(int i = 0; code[i]; i++)
