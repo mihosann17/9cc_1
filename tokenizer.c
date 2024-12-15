@@ -128,14 +128,12 @@ Token *tokenize(char *p)
         {
             cur = new_token(TK_RESERVED, cur, p, 2);
             p += 2;
-            cur->len = 2;
             continue;
         }
 
         if(strchr("+-*/()<>=;", *p))
         {
             cur = new_token(TK_RESERVED, cur, p++, 1);
-            cur->len = 1;
             continue;
         }
 
@@ -143,8 +141,13 @@ Token *tokenize(char *p)
         {
             cur = new_token(TK_NUM, cur, p, 1);
             cur->val = strtol(p, &p, 10);
-            cur->len = 1;
             continue;
+        }
+
+        if(strcmp(p, "return") == 0)
+        {
+            cur = new_token(TK_RETURN, cur, p, 6);
+            p += 6;
         }
 
         if(is_valuable(*p))
