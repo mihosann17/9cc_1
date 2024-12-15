@@ -74,6 +74,7 @@ void gen(Node *node);
 void error(char *fmt, ...);
 void error_at(char *loc, char *fmt, ...);
 int countLvar();
+bool consume_reserved_character(TokenKind kind);
 Node *code[100];
 
 //  現在着目しているトークン

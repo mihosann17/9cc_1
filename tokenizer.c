@@ -26,6 +26,13 @@ void error_at(char *loc, char *fmt, ...)
     exit(1);
 }
 
+bool consume_reserved_character(TokenKind kind)
+{
+    if(token->kind != kind) return false;
+    token = token->next;
+    return true;
+}
+
 //  次のトークンが期待している記号の時には、トークンを1つ読み進めて
 //  真を返す。それ以外の場合には偽を返す。
 bool consume(char *op)
@@ -144,10 +151,11 @@ Token *tokenize(char *p)
             continue;
         }
 
-        if(strcmp(p, "return") == 0)
+        if(strcmp(p, "return") == 0 || countIdentLength(p) == 6)
         {
             cur = new_token(TK_RETURN, cur, p, 6);
             p += 6;
+            continue;
         }
 
         if(is_valuable(*p))

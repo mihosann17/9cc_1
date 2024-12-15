@@ -89,7 +89,7 @@ void program()
 Node *stmt()
 {
     Node *node;
-    if(consume("return"))
+    if(consume_reserved_character(TK_RETURN))
     {
         node = calloc(1, sizeof(Node));
         node->kind = ND_RETURN;
