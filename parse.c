@@ -114,6 +114,15 @@ Node *stmt()
             node->elseBody = NULL;
         }
     }
+    else if(consume_reserved_character(TK_WHILE))
+    {
+        expect("(");
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_WHILE;
+        node->cond = expr();
+        expect(")");
+        node->body = stmt();
+    }
     else
     {
         node = expr();
