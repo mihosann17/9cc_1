@@ -94,13 +94,32 @@ Node *stmt()
         node = calloc(1, sizeof(Node));
         node->kind = ND_RETURN;
         node->lhs = expr();
+        expect(";");
+    }
+    else if(consume_reserved_character(TK_IF))
+    {
+        expect("(");
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_IF;
+        node->cond = expr();
+        expect(")");
+        node->body = stmt();
+
+        if(consume_reserved_character(TK_ELSE))
+        {
+            node->elseBody = stmt();
+        }
+        else
+        {
+            node->elseBody = NULL;
+        }
     }
     else
     {
         node = expr();
+        expect(";");
     }
 
-    expect(";");
     return node;
 }
 

@@ -28,7 +28,7 @@ int main(int argc, char **argv)
     printf("main:\n");
 
     //  プロローグ
-    //  変数26子分の領域を確保する
+    //  変数の個数分だけ領域を確保する
     printf("    push rbp\n");
     printf("    mov rbp, rsp\n");
     printf("    sub rsp, %d\n", lvarCount * 8);

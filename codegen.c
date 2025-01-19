@@ -9,8 +9,11 @@ void gen_lval(Node *node)
     printf("    push rax\n");
 }
 
+int label_index = 0;
+
 void gen(Node *node)
 {
+    int current_label;
     switch (node->kind)
     {
         case ND_NUM:
@@ -37,6 +40,28 @@ void gen(Node *node)
             printf("    mov rsp, rbp\n");
             printf("    pop rbp\n");
             printf("    ret\n");
+            return;
+        case ND_IF:
+            current_label = label_index;
+            label_index++;
+
+            //condition
+            gen(node->cond);
+            printf("    pop rax\n");
+            printf("    cmp rax, 0\n");
+            printf("    je .Lelse%d\n", current_label);
+
+            //body
+            gen(node->body);
+            printf("    jmp .Lend%d\n", current_label);
+
+            //else
+            printf(".Lelse%d:\n", current_label);
+            if(node->elseBody)
+                gen(node->elseBody);
+            
+            //end of if statement
+            printf(".Lend%d:", current_label);
             return;
     }
 

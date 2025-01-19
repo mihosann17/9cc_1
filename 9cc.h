@@ -20,6 +20,7 @@ typedef enum
     ND_ASSIGN,      //  =
     ND_LVAR,        //  ローカル変数
     ND_RETURN,      //  return
+    ND_IF,          //  if
 }NodeKind;
 
 typedef struct Node Node;
@@ -31,6 +32,15 @@ struct Node
     Node *rhs;      //  右辺
     int val;        //  kindがND_NUMの場合のみ使う
     int offset;     //  kindがND_LVARの場合のみ使う
+
+    // "if" ( cond ) body "else" elseBody
+    // "for" ( init; cond; inc ) body
+    // "while" ( cond ) body
+    Node *cond;
+    Node *body;
+    Node *elseBody;
+    Node *init;
+    Node *inc;
 };
 
 //トークンの種類
@@ -41,6 +51,8 @@ typedef enum
     TK_NUM,         //  整数トークン
     TK_EOF,         //  入力の終わりを表すトークン
     TK_RETURN,      //  return
+    TK_IF,          //  if
+    TK_ELSE,        //  else
 }TokenKind;
 
 typedef struct Token Token;
