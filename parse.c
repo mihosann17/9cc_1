@@ -164,6 +164,20 @@ Node *stmt()
 
         node->body = stmt();
     }
+    else if(consume("{"))
+    {
+        node = calloc(1,sizeof(Node));
+        node->kind = ND_BLOCK;
+        node->stmts = calloc(100, sizeof(Node *)); //ブロックで扱えるstatementの量は100とする
+        node->count = 0;
+        node->stmts[node->count] = NULL;
+
+        while(!consume("}"))
+        {
+            node->stmts[node->count] = stmt();
+            node->count++;
+        }
+    }
     else
     {
         node = expr();

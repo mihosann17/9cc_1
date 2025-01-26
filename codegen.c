@@ -126,6 +126,21 @@ void gen(Node *node)
             printf(".Lend%d:\n", current_label);
             printf("# end FOR\n");
             return;
+        case ND_BLOCK:
+            printf("#start block\n");
+            int i;
+            for(i=0; i < node->count; i++)
+            {
+                printf("#block line(%d)\n", i);
+                gen(node->stmts[i]);
+
+                if(i < node->count - 1)
+                {
+                    printf("    pop rax\n");
+                }
+            }
+            printf("#end block\n");
+            return;
     }
 
     gen(node->lhs);

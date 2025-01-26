@@ -47,6 +47,7 @@ struct Node
 
     //  block
     Node **stmts;
+    int count;
 };
 
 //トークンの種類
