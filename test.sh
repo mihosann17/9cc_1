@@ -36,6 +36,7 @@ assert 1 " 0 != 1;"
 assert 0 " 4 != 4;"
 assert 1 " 0 <= 1;"
 assert 1 " 0 <= 0;"
+assert 1 " 5-3 <= 10-4;"
 assert 0 " 1 <= 0;"
 assert 1 " 0 < 1 ;"
 assert 0 " 4 < 4 ;"
@@ -62,10 +63,16 @@ assert 2 "a=1; if (a==1) a = a + 1; return a;"
 assert 2 "a=1; if (a==1) return 2; else a = 3; return a;"
 assert 2 "a=3; if (a!=1) return 2; else a = 3; return a;"
 assert 2 "a=1; if (a==1) a=2; else a = 3; return a;"
+assert 8 "a = 2; b = 3; if(a <= b) return a + b + 3;"
 
 # while
 assert 2 "a=10; while(a) a = a - 1;a+2;"
 assert 7 "a=10; while(a > 5) a = a - 1;a+2;"
-assert 55 "sum=0; i=0; while((i=i+1) <=10) sum = sum + i; return sum;"
+assert 66 "sum=0; i=0; while((i=i+1) <=11) sum = sum + i; return sum;"
+
+# for
+assert 55 "sum=0; for ( i=1; i<=10; i=i+1) sum=sum+i;return sum;"
+assert 55 "sum=0; i=1; for(; i<=10; i=i+1) sum=sum+i;return sum;"
+assert 55 "sum=0; i=0; for(; i<10; ) sum=sum+(i=i+1);return sum;"
 
 echo OK

@@ -123,6 +123,47 @@ Node *stmt()
         expect(")");
         node->body = stmt();
     }
+    else if(consume_reserved_character(TK_FOR))
+    {
+        expect("(");
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_FOR;
+
+        //initialize検出
+        if(consume(";"))
+        {
+            node->init = NULL;
+        }
+        else
+        {
+            node->init = expr();
+            expect(";");
+        }
+
+        //condition検出
+        if(consume(";"))
+        {
+            node->cond = NULL;
+        }
+        else
+        {
+            node->cond = expr();
+            expect(";");
+        }
+
+        //increment検出
+        if(consume(")"))
+        {
+            node->inc = NULL;
+        }
+        else
+        {
+            node->inc = expr();
+            expect(")");
+        }
+
+        node->body = stmt();
+    }
     else
     {
         node = expr();
